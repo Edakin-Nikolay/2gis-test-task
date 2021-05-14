@@ -11,7 +11,7 @@ type TabProps = {
 
 const Tab = (props: TabProps) => {
     const {books, tab, changeStatus, addFilteredTag} = props;
-    return (<div className="Tab">
+    return (<div>
         {books.length > 0
             ? books.map(book =>
                 <Book key={book.id.toString()}
@@ -19,7 +19,7 @@ const Tab = (props: TabProps) => {
                       buttonLabel={tab.buttonLabel}
                       addFilteredTag={addFilteredTag}
                       changeStatus={() => changeStatus(book.id)}/>)
-            : <span className="EmptyTab">List is Empty</span>}
+            : <span>List is Empty</span>}
     </div>);
 }
 

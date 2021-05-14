@@ -1,32 +1,71 @@
-.App {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+html {
+    font-family: "Roboto", sans-serif;
 }
 
-.Navigation {
-    display: flex;
-    justify-content: center;
-    min-width: 480px;
+.main-wrapper {
     max-width: 1280px;
-    border-top: 1px #999999 solid;
-    border-left: 1px #999999 solid;
-    border-right: 1px #999999 solid;
+    min-width: 480px;
+    margin: auto;
 }
 
-.Link {
+.tag-wrapper {
     display: flex;
-    min-width: 160px;
-    align-items: center;
-    justify-content: center;
-    height: 5vh;
-    border: solid #999999 1px;
-    border-bottom: 2px solid #999999;
-    text-decoration: none;
-    color: black;
 }
 
-.ActiveLink {
+.tag {
+    background-color: #ddd;
+    margin-right: 8px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.book-title {
+    font-weight: bold;
+    font-size: 18px;
+    flex-grow: 1;
+}
+
+.action-button {
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.button-label {
+    border-bottom: 1px solid #000;
+}
+
+.book {
+    padding: 16px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
+
+.book-title-wrapper {
+    display: flex;
+    align-items: baseline;
+}
+
+.tab-wrapper {
+    display: flex;
+}
+
+.tab-title {
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    border-right: 1px solid #999;
+    flex-grow: 1;
+    line-height: 48px;
+    text-align: center;
+}
+
+.tab-title:first-child {
+    border-left: 1px solid #999;
+}
+
+.tab-title.active {
     font-weight: bold;
     border-bottom: 0;
 }

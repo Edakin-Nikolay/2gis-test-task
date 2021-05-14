@@ -40,7 +40,6 @@ export default function App() {
 
         window.onpopstate = function(event) {
             setMainState(prevState => setData(prevState, event.state));
-            console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
         };
 
     }, []);
@@ -89,12 +88,12 @@ export default function App() {
 
     console.log(mainState);
     return (
-        <div className="App">
-            <div>
+        <div className="main-wrapper">
+            <div className="tab-wrapper">
                 {tabValues.map(tab =>
-                <span onClick={() => changeTab(tab.status)}>
+                <div className={`tab-title ${mainState.activeTab === tab.status && "active"}`} onClick={() => changeTab(tab.status)}>
                     {`${tab.tabLabel} (${countBooks(tab.status)})`}
-                </span>)}
+                </div>)}
             </div>
             {mainState.tags.length > 0 && <Filter tags={mainState.tags} clear={clearFilteredTag}/>}
             {tabValues.map(tab =>
