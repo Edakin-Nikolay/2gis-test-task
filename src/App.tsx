@@ -12,6 +12,7 @@ function useQuery() {
 
 export default function App() {
     const [mainState, setMainState] = useState<Main>({books: [], activeTab: "toread", tags: []});
+
     useEffect(() => {
         const booksLS = loadFromLocalStorage();
         getBooks().then(resp => {
@@ -36,8 +37,15 @@ export default function App() {
         if (urlTags) {
             setMainState(prevState => setData(prevState, {tags: urlTags.split(",")}));
         }
-    }, [])
-    useEffect(() => setUrl(), [mainState.activeTab, mainState.tags]);
+
+        window.onpopstate = function(event) {
+            setMainState(prevState => setData(prevState, event.state));
+            console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+        };
+
+    }, []);
+
+    //useEffect(() => setUrl(), [mainState.activeTab, mainState.tags]);
 
     const isActive = (tabStatus: Status) =>
         mainState.activeTab === tabStatus;
@@ -45,17 +53,17 @@ export default function App() {
     const booksForTab = (tabStatus: Status) =>
         mainState.books.filter(book => book.status === tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag)));
 
-    const setUrl = () => {
-        console.log("set URL");
-        const tab = `tab=${mainState.activeTab}`;
-        const tags = `tags=${mainState.tags.join()}`;
+    const setUrl = (tabStatus: Status, tags: Array<Tag> = mainState.tags) => {
+        const tabQuery = `tab=${mainState.activeTab}`;
+        const tagsQuery = `tags=${mainState.tags.join()}`;
         history.pushState({
             activeTab: mainState.activeTab,
             tags: mainState.tags
-        }, mainState.activeTab, mainState.tags.length > 0 ? `/?${tab}&${tags}` : `/?${tab}`)
+        }, mainState.activeTab, tags.length > 0 ? `/?${tabQuery}&${tagsQuery}` : `/?${tabQuery}`)
     }
     const changeTab = (tabStatus: Status) => {
         setMainState(prevState => setData(prevState, {activeTab: tabStatus}));
+        setUrl(tabStatus);
     }
 
     const changeBookStatus = (status: Status) => (bookId: BookId) => {
@@ -66,16 +74,20 @@ export default function App() {
 
     const addFilteredTag = (tag: Tag) => {
         if (!mainState.tags.includes(tag)) {
-            setMainState(prevState => setData(prevState, {tags: prevState.tags.concat([tag])}))
+            setMainState(prevState => setData(prevState, {tags: prevState.tags.concat([tag])}));
+            setUrl(mainState.activeTab, mainState.tags.concat([tag]));
         }
     }
 
-    const clearFilteredTag = () =>
+    const clearFilteredTag = () => {
         setMainState(prevState => setData(prevState, {tags: []}));
+        setUrl(mainState.activeTab, []);
+    }
 
     const countBooks = (tabStatus: Status) =>
         mainState.books.filter(book => book.status === tabStatus).length;
 
+    console.log(mainState);
     return (
         <div className="App">
             <div>
