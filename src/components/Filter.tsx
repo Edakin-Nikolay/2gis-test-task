@@ -8,8 +8,9 @@ interface FilterProps {
 
 const Filter = (props: FilterProps) => {
     const {tags, clear} = props;
-    return (<div>
-        <div>Filtered by tags: {tags.map(tag => <span className="tag">#{tag} </span>)}<span onClick={clear}>(clear)</span></div>
+    return (<div className="tag-filter-wrapper">
+        <div className="tag-filter">Filtered by tags: {tags.map(tag => <span className="tag">#{tag} </span>)}
+            <span>(<span className="clear-button" onClick={clear}>clear</span>)</span></div>
     </div>);
 }
 

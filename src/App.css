@@ -36,11 +36,18 @@ html {
     border-bottom: 1px solid #000;
 }
 
-.book {
+.book, .tag-filter-wrapper {
     padding: 16px;
     border-left: 1px solid #999;
     border-right: 1px solid #999;
     border-bottom: 1px solid #999;
+}
+
+.tag-filter-wrapper {
+    display: flex;
+    height: 82px;
+    padding-left: 32px;
+    align-items: center;
 }
 
 .book-title-wrapper {
@@ -59,6 +66,7 @@ html {
     flex-grow: 1;
     line-height: 48px;
     text-align: center;
+    cursor: pointer;
 }
 
 .tab-title:first-child {
@@ -68,4 +76,9 @@ html {
 .tab-title.active {
     font-weight: bold;
     border-bottom: 0;
+}
+
+.clear-button {
+    border-bottom: 1px solid #000;
+    cursor: pointer;
 }
