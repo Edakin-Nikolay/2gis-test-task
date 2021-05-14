@@ -1,59 +1,42 @@
-type BookId = String;
+import {ReactElement} from "react";
+
+export type BookId = String;
 type Author = String;
 type Title = String;
 type Description = String;
-type Tag = String;
+export type Tag = String;
+type Label = String;
+export type ButtonLabel = ReactElement;
 
-export type TabId = "toRead" | "inProgress" | "done";
+export type Status = "toRead" | "inProgress" | "done";
 
-export class Book {
-    id: BookId;
-    author: Author;
-    title: Title;
-    description: Description;
-    tags: Array<Tag>;
-
-    constructor(
-        id: BookId,
-        author: Author,
-        title: Title,
-        description: Description,
-        tags: Array<Tag>,
-    ) {
-       this.id = id;
-       this.author = author;
-       this.title = title;
-       this.description = description;
-       this.tags = tags;
-    };
+export interface Book {
+    id: BookId,
+    author: Author,
+    title: Title,
+    description: Description,
+    tags: Array<Tag>,
+    status: Status,
 }
 
-export class TabModel {
-    bookIds: Array<BookId> | null;
-    filteredTags: Array<Tag> | null;
-    constructor(
-        bookIds: Array<BookId> | null,
-        filteredTags: Array<Tag> | null,
-    ) {
-        this.bookIds = bookIds;
-        this.filteredTags = filteredTags;
-    };
+export interface Tab {
+    status: Status,
+    tabLabel: Label,
+    buttonLabel: ButtonLabel,
+    nextStatus: Status,
 }
 
-export class MainState {
-    tabs: Map<TabId, TabModel>;
-    books: Array<Book> | null;
+export interface Main {
+    books: Array<Book>,
+    activeTab: Status,
+    tags: Array<Tag>,
+}
 
-    constructor(
-       tabs: Map<TabId, TabModel>,
-       books: Array<Book> | null,
-   ) {
-        this.tabs = tabs;
-        this.books = books;
-    };
+export interface LocalStorageBook {
+    id: BookId,
+    status: Status,
+}
 
-   setBooks (newBooks) {
-      this.books = newBooks;
-      return this;
-   }
+export function setData<T>(oldObj: T, newObj: object): T{
+    return Object.assign({}, oldObj, newObj);
 }
