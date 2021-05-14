@@ -8,7 +8,7 @@ export type Tag = String;
 type Label = String;
 export type ButtonLabel = ReactElement;
 
-export type Status = "toRead" | "inProgress" | "done";
+export type Status = "toread" | "inprogress" | "done";
 
 export interface Book {
     id: BookId,

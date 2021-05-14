@@ -1,23 +1,25 @@
 import React from "react";
 import {Tab} from "./lib/Models";
 
-export const ToRead: Tab = {
-    status: "toRead",
+const ToRead: Tab = {
+    status: "toread",
     tabLabel: "To read",
     buttonLabel: <span className="ButtonLabel">start reading →</span>,
-    nextStatus: "inProgress",
+    nextStatus: "inprogress",
 }
 
-export const InProgress: Tab = {
-    status: "inProgress",
+const InProgress: Tab = {
+    status: "inprogress",
     tabLabel: "In progress",
     buttonLabel: <span className="ButtonLabel">finish reading →</span>,
     nextStatus: "done",
 }
 
-export const Done: Tab = {
+const Done: Tab = {
     status: "done",
     tabLabel: "Done",
     buttonLabel: <span className="ButtonLabel">return in «to read» ↲</span>,
-    nextStatus: "toRead",
+    nextStatus: "toread",
 }
+
+export const tabValues: Array<Tab> = [ToRead, InProgress, Done];
