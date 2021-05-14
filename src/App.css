@@ -1,0 +1,33 @@
+.App {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: darkred solid 2px;
+}
+
+.Navigation {
+    display: flex;
+    justify-content: center;
+    min-width: 480px;
+    max-width: 1280px;
+    border-top: 1px #999999 solid;
+    border-left: 1px #999999 solid;
+    border-right: 1px #999999 solid;
+}
+
+.Link {
+    display: flex;
+    min-width: 160px;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
+    border: solid #999999 1px;
+    border-bottom: 2px solid #999999;
+    text-decoration: none;
+    color: black;
+}
+
+.ActiveLink {
+    font-weight: bold;
+    border-bottom: 0;
+}
