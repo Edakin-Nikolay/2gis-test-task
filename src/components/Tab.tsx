@@ -19,7 +19,7 @@ const Tab = (props: TabProps) => {
                       buttonLabel={tab.buttonLabel}
                       addFilteredTag={addFilteredTag}
                       changeStatus={() => changeStatus(book.id)}/>)
-            : <span>List is Empty</span>}
+            : <div className="empty-tab">List is empty</div>}
     </div>);
 }
 

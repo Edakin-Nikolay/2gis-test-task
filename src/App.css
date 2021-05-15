@@ -79,6 +79,16 @@ html {
 }
 
 .clear-button {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #999;
     cursor: pointer;
+}
+
+.empty-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    border-bottom: 1px solid #999;
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
 }
