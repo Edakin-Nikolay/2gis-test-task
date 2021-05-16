@@ -1,7 +1,7 @@
 import React from "react";
 import {Tab} from "./lib/Models";
 
-const ToRead: Tab = {
+export const ToRead: Tab = {
     status: "toread",
     tabLabel: "To read",
     buttonLabel: <span><span className="button-label">start reading</span>&nbsp;→</span>,
