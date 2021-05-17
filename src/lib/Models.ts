@@ -8,7 +8,11 @@ export type Tag = String;
 type Label = String;
 export type ButtonLabel = ReactElement;
 
-export type Status = "toread" | "inprogress" | "done";
+export enum Status {
+    Toread = "toread",
+    Inprogress = "inprogress",
+    Done = "done",
+};
 
 export interface Book {
     id: BookId,

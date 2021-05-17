@@ -2,12 +2,12 @@ import React, {useEffect, useState} from "react";
 import Tab from "./components/Tab";
 import "./App.css";
 import {Book, BookId, Main, setData, Status, Tag} from "./lib/Models";
-import {tabValues, ToRead} from './TabsData';
-import {getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
+import {tabValues} from './TabsData';
+import {get30000Books, getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
 import Filter from "./components/Filter";
 
 export default function App() {
-    const [mainState, setMainState] = useState<Main>({books: [], activeTab: ToRead.status, tags: []});
+    const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.Toread, tags: []});
     const urlQuery = new URLSearchParams(window.location.search);
 
     useEffect(() => {
@@ -18,12 +18,12 @@ export default function App() {
                 return setMainState(prevState =>
                     setData(prevState,{books: books.map(item => {
                         const book = booksLS.find(bookLS => bookLS.id === item.id);
-                        return setData(item, {status: book ? book.status : ToRead.status});
+                        return setData(item, {status: book ? book.status : Status.Toread});
                         })}))
             } else {
                 return setMainState(prevState =>
                     setData<Main>(prevState, {books: books.map(item =>
-                            setData(item, {status: ToRead.status}))}))
+                            setData(item, {status: Status.Toread}))}))
             }
         });
         // устанавливаем таб из URL
