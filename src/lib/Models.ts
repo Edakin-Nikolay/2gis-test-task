@@ -9,10 +9,10 @@ type Label = String;
 export type ButtonLabel = ReactElement;
 
 export enum Status {
-    Toread = "toread",
-    Inprogress = "inprogress",
+    ToRead = "toread",
+    InProgress = "inprogress",
     Done = "done",
-};
+}
 
 export interface Book {
     id: BookId,
@@ -41,6 +41,6 @@ export interface LocalStorageBook {
     status: Status,
 }
 
-export function setData<T>(oldObj: T, newObj: object): T{
+export function updateFields<T>(oldObj: T, newObj: object): T{
     return Object.assign({}, oldObj, newObj);
 }

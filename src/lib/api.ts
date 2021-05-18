@@ -16,5 +16,7 @@ export const saveToLocalStorage = (books: Array<Book>) => {
     localStorage.setItem("books", JSON.stringify(localStorageBooks));
 }
 
-export const loadFromLocalStorage = () =>
-    JSON.parse(localStorage.getItem("books"));
+export const loadFromLocalStorage = (): Array<any> => {
+    const parsed = JSON.parse(localStorage.getItem("books"));
+    return parsed ? parsed : [];
+}

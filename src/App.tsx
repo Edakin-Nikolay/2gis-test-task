@@ -1,44 +1,37 @@
 import React, {useEffect, useState} from "react";
 import Tab from "./components/Tab";
 import "./App.css";
-import {Book, BookId, Main, setData, Status, Tag} from "./lib/Models";
+import {Book, BookId, Main, updateFields, Status, Tag} from "./lib/Models";
 import {tabValues} from './TabsData';
-import {get30000Books, getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
+import {getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
 import Filter from "./components/Filter";
 
 export default function App() {
-    const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.Toread, tags: []});
+    const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.ToRead, tags: []});
     const urlQuery = new URLSearchParams(window.location.search);
 
     useEffect(() => {
-        const booksLS = loadFromLocalStorage();
         getBooks().then(resp => {
             const books = resp.items;
-            if (booksLS) {
-                return setMainState(prevState =>
-                    setData(prevState,{books: books.map(item => {
-                        const book = booksLS.find(bookLS => bookLS.id === item.id);
-                        return setData(item, {status: book ? book.status : Status.Toread});
-                        })}))
-            } else {
-                return setMainState(prevState =>
-                    setData<Main>(prevState, {books: books.map(item =>
-                            setData(item, {status: Status.Toread}))}))
-            }
+            const booksLS = loadFromLocalStorage();
+            setMainState(updateFields(mainState, {books: books.map(book => {
+                    const bookFromLS = booksLS.find(bookLS => bookLS.id === book.id);
+                    return updateFields(book, {status: bookFromLS ? bookFromLS.status : Status.ToRead});
+                })}))
         });
         // устанавливаем таб из URL
         const urlTab = urlQuery.get("tab");
         if (tabValues.some(tab => tab.status === urlTab)) {
-            setMainState(prevState => setData(prevState, {activeTab: urlTab}));
+            setMainState(updateFields(mainState, {activeTab: urlTab}));
         }
         // устанавливаем теги из URL
         const urlTags = urlQuery.get("tags");
         if (urlTags) {
-            setMainState(prevState => setData(prevState, {tags: urlTags.split(",")}));
+            setMainState(updateFields(mainState, {tags: urlTags.split(",")}));
         }
 
         window.onpopstate = function(event) {
-            setMainState(prevState => setData(prevState, event.state));
+            setMainState(prevState => updateFields(prevState, event.state));
         };
 
     }, []);
@@ -48,52 +41,55 @@ export default function App() {
     const isActive = (tabStatus: Status) =>
         mainState.activeTab === tabStatus;
 
+    const filterBooksByStatus = (tabStatus: Status): Array<Book> =>
+        mainState.books.filter(book => book.status === tabStatus);
+
     const booksForTab = (tabStatus: Status): Array<Book> =>
-        mainState.books.filter(book => book.status === tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag)));
+        filterBooksByStatus(tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag)));
 
     const setUrl = () => {
-        const tabQuery = `tab=${mainState.activeTab}`;
-        const tagsQuery = `tags=${encodeURIComponent(mainState.tags.join())}`;
-        if (!(mainState.activeTab === urlQuery.get("tab") && mainState.tags.join() === urlQuery.get("tags"))) {
+        const queryTab = urlQuery.get("tab") ? urlQuery.get("tab") : "";
+        const queryTags = urlQuery.get("tags") ? urlQuery.get("tags") : "";
+        if (!(mainState.activeTab === queryTab && mainState.tags.join() === queryTags)) {
+            urlQuery.set("tab", mainState.activeTab);
+            mainState.tags.length > 0 && urlQuery.set("tags", mainState.tags.join());
             history.pushState({
                 activeTab: mainState.activeTab,
                 tags: mainState.tags
-            }, mainState.activeTab, mainState.tags.length > 0 ? `/?${tabQuery}&${tagsQuery}` : `/?${tabQuery}`)
+            }, mainState.activeTab, `/?${urlQuery.toString()}`)
         }
     }
 
     const changeTab = (tabStatus: Status) =>
-        setMainState(prevState => setData(prevState, {activeTab: tabStatus}));
+        setMainState(prevState => updateFields(prevState, {activeTab: tabStatus}));
 
     const changeBookStatus = (status: Status) => (bookId: BookId) => {
-        const newBooks = mainState.books.map(book => book.id === bookId ? setData(book, {status}) : book);
-        setMainState(prevState => setData(prevState, {books: newBooks}));
+        const newBooks = mainState.books.map(book => book.id === bookId ? updateFields(book, {status}) : book);
+        setMainState(prevState => updateFields(prevState, {books: newBooks}));
         saveToLocalStorage(newBooks);
     }
 
     const addFilteredTag = (tag: Tag) => {
         if (!mainState.tags.includes(tag)) {
-            setMainState(prevState => setData(prevState, {tags: prevState.tags.concat([tag])}));
+            setMainState(prevState => updateFields(prevState, {tags: prevState.tags.concat([tag])}));
         }
     }
 
     const clearFilteredTag = () =>
-        setMainState(prevState => setData(prevState, {tags: []}));
-
-    const countBooks = (tabStatus: Status) =>
-        mainState.books.filter(book => book.status === tabStatus).length;
+        setMainState(prevState => updateFields(prevState, {tags: []}));
 
     return (
         <div className="main-wrapper">
             <div className="tab-wrapper">
                 {tabValues.map(tab =>
-                <div className={`tab-title ${mainState.activeTab === tab.status && "active"}`} onClick={() => changeTab(tab.status)}>
-                    {`${tab.tabLabel} (${countBooks(tab.status)})`}
+                <div className={`tab-title ${isActive(tab.status) && "active"}`} onClick={() => changeTab(tab.status)}>
+                    {`${tab.tabLabel} (${filterBooksByStatus(tab.status).length})`}
                 </div>)}
             </div>
             {mainState.tags.length > 0 && <Filter tags={mainState.tags} clear={clearFilteredTag}/>}
             {tabValues.map(tab =>
-            isActive(tab.status) && <Tab key={tab.status}
+                isActive(tab.status) &&
+                <Tab key={tab.status}
                      books={booksForTab(tab.status)}
                      tab={tab}
                      changeStatus={changeBookStatus(tab.nextStatus)}
