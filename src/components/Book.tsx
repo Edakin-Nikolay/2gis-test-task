@@ -1,5 +1,5 @@
 import React from "react";
-import {Book, ButtonLabel, Tag} from "../lib/Models";
+import {Book, ButtonLabel, Tag} from "../lib/models";
 
 interface BookProps {
     book: Book,
@@ -14,14 +14,14 @@ const Book = (props: BookProps) => {
     return (<div className="book">
         <p>{book.author}</p>
         <div className="book-title-wrapper">
-        <p className="book-title">{book.title}</p>
-        <p className="action-button" onClick={changeStatus}>{buttonLabel}</p>
+            <p className="book-title">{book.title}</p>
+            <p className="action-button" onClick={changeStatus}>{buttonLabel}</p>
         </div>
         <p>{book.description}</p>
         <div className="tag-wrapper">{book.tags.map(tag =>
             <div className="tag" onClick={() => addFilteredTag(tag)}>#{tag}</div>)}
         </div>
-    </div>)
+    </div>);
 }
 
 export default Book;

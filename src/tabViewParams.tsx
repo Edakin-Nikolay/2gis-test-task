@@ -1,5 +1,5 @@
 import React from "react";
-import {Status, Tab} from "./lib/Models";
+import {Status, Tab} from "./lib/models";
 
 const ToRead: Tab = {
     status: Status.ToRead,

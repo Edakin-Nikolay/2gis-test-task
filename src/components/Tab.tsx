@@ -1,5 +1,5 @@
 import React from 'react';
-import {Book as BookModel, BookId, Tab, Tag} from "../lib/Models";
+import {Book as BookModel, BookId, Tab, Tag} from "../lib/models";
 import Book from "./Book";
 
 type TabProps = {
@@ -23,7 +23,7 @@ const Tab = (props: TabProps) => {
                       changeStatus={() => changeStatus(book.id)}/>)}
                 <div className="next-page-button-wrapper">
                     <button disabled={!canNextPage} onClick={nextPage}>
-                        Add next 50 books
+                        Show next 50 books
                     </button>
                 </div>
             </div>
