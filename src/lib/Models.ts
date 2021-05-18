@@ -14,6 +14,11 @@ export enum Status {
     Done = "done",
 }
 
+export enum QueryFields {
+    Tab = "tab",
+    Tags = "tags",
+}
+
 export interface Book {
     id: BookId,
     author: Author,

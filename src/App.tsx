@@ -1,34 +1,32 @@
 import React, {useEffect, useState} from "react";
 import Tab from "./components/Tab";
 import "./App.css";
-import {Book, BookId, Main, updateFields, Status, Tag} from "./lib/Models";
+import {Book, BookId, Main, updateFields, Status, Tag, QueryFields} from "./lib/Models";
 import {tabValues} from './TabsData';
 import {getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
 import Filter from "./components/Filter";
 
 export default function App() {
     const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.ToRead, tags: []});
-    const urlQuery = new URLSearchParams(window.location.search);
 
     useEffect(() => {
         getBooks().then(resp => {
             const books = resp.items;
             const booksLS = loadFromLocalStorage();
-            setMainState(updateFields(mainState, {books: books.map(book => {
-                    const bookFromLS = booksLS.find(bookLS => bookLS.id === book.id);
-                    return updateFields(book, {status: bookFromLS ? bookFromLS.status : Status.ToRead});
-                })}))
+            setMainState(updateFields(mainState, {books: books.map(book =>
+                    updateFields(book,
+                        {status: booksLS.find(bookLS => bookLS.id === book.id)?.status || Status.ToRead})
+                )}))
         });
-        // устанавливаем таб из URL
-        const urlTab = urlQuery.get("tab");
-        if (tabValues.some(tab => tab.status === urlTab)) {
-            setMainState(updateFields(mainState, {activeTab: urlTab}));
-        }
-        // устанавливаем теги из URL
-        const urlTags = urlQuery.get("tags");
-        if (urlTags) {
-            setMainState(updateFields(mainState, {tags: urlTags.split(",")}));
-        }
+        const urlQuery = new URLSearchParams(window.location.search);
+
+        const urlTab = urlQuery.get(QueryFields.Tab);
+        const urlTags = urlQuery.get(QueryFields.Tags);
+        setMainState(updateFields(mainState,
+            {
+                activeTab: tabValues.some(tab => tab.status === urlTab) ? urlTab : mainState.activeTab, // устанавливаем таб из URL
+                tags:  urlTags?.split(",") || mainState.tags, // устанавливаем теги из URL
+            }))
 
         window.onpopstate = function(event) {
             setMainState(prevState => updateFields(prevState, event.state));
@@ -48,11 +46,13 @@ export default function App() {
         filterBooksByStatus(tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag)));
 
     const setUrl = () => {
-        const queryTab = urlQuery.get("tab") ? urlQuery.get("tab") : "";
-        const queryTags = urlQuery.get("tags") ? urlQuery.get("tags") : "";
-        if (!(mainState.activeTab === queryTab && mainState.tags.join() === queryTags)) {
-            urlQuery.set("tab", mainState.activeTab);
-            mainState.tags.length > 0 && urlQuery.set("tags", mainState.tags.join());
+        const urlQuery = new URLSearchParams(window.location.search);
+        const urlTab = urlQuery.get(QueryFields.Tab) || "";
+        const urlTags = urlQuery.get(QueryFields.Tags) || "";
+        const tagsString = mainState.tags.join();
+        if (!(mainState.activeTab === urlTab && tagsString === urlTags)) {
+            urlQuery.set(QueryFields.Tab, mainState.activeTab);
+            mainState.tags.length > 0 && urlQuery.set(QueryFields.Tags, tagsString);
             history.pushState({
                 activeTab: mainState.activeTab,
                 tags: mainState.tags
