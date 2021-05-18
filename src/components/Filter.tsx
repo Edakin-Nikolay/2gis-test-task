@@ -1,5 +1,5 @@
 import React from "react";
-import {Tag} from "../lib/Models";
+import {Tag} from "../lib/models";
 
 interface FilterProps {
     tags: Array<Tag>,

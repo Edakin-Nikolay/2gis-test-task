@@ -1,10 +1,9 @@
-import {Book, LocalStorageBook} from "./Models";
+import {Book, LocalStorageBook} from "./models";
 
 export const getBooks = () => {
     return fetch("https://raw.githubusercontent.com/lastw/test-task/master/data/10-items.json")
         .then((resp: Response) => resp.json())
 }
-
 
 export const get30000Books = () => {
     return fetch("https://raw.githubusercontent.com/lastw/test-task/master/data/30000-items.json")

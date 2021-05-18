@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Tab from "./components/Tab";
 import "./App.css";
-import {Book, BookId, Main, updateFields, Status, Tag, QueryFields} from "./lib/Models";
-import {tabValues} from './TabsData';
+import {Book, BookId, Main, updateFields, Status, Tag, QueryFields} from "./lib/models";
+import {tabValues} from './tabViewParams';
 import {getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
 import Filter from "./components/Filter";
+
+const getQuery = () => new URLSearchParams(window.location.search);
 
 export default function App() {
     const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.ToRead, tags: []});
@@ -18,7 +20,7 @@ export default function App() {
                         {status: booksLS.find(bookLS => bookLS.id === book.id)?.status || Status.ToRead})
                 )}))
         });
-        const urlQuery = new URLSearchParams(window.location.search);
+        const urlQuery = getQuery();
 
         const urlTab = urlQuery.get(QueryFields.Tab);
         const urlTags = urlQuery.get(QueryFields.Tags);
@@ -46,7 +48,7 @@ export default function App() {
         filterBooksByStatus(tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag)));
 
     const setUrl = () => {
-        const urlQuery = new URLSearchParams(window.location.search);
+        const urlQuery = getQuery();
         const urlTab = urlQuery.get(QueryFields.Tab) || "";
         const urlTags = urlQuery.get(QueryFields.Tags) || "";
         const tagsString = mainState.tags.join();
@@ -60,10 +62,10 @@ export default function App() {
         }
     }
 
-    const changeTab = (tabStatus: Status) =>
+    const setTab = (tabStatus: Status) =>
         setMainState(prevState => updateFields(prevState, {activeTab: tabStatus}));
 
-    const changeBookStatus = (status: Status) => (bookId: BookId) => {
+    const setBookStatus = (status: Status) => (bookId: BookId) => {
         const newBooks = mainState.books.map(book => book.id === bookId ? updateFields(book, {status}) : book);
         setMainState(prevState => updateFields(prevState, {books: newBooks}));
         saveToLocalStorage(newBooks);
@@ -78,22 +80,20 @@ export default function App() {
     const clearFilteredTag = () =>
         setMainState(prevState => updateFields(prevState, {tags: []}));
 
-    return (
-        <div className="main-wrapper">
-            <div className="tab-wrapper">
-                {tabValues.map(tab =>
-                <div className={`tab-title ${isActive(tab.status) && "active"}`} onClick={() => changeTab(tab.status)}>
+    return (<div className="main-wrapper">
+        <div className="tab-wrapper">
+            {tabValues.map(tab =>
+                <div className={`tab-title ${isActive(tab.status) && "active"}`} onClick={() => setTab(tab.status)}>
                     {`${tab.tabLabel} (${filterBooksByStatus(tab.status).length})`}
                 </div>)}
-            </div>
-            {mainState.tags.length > 0 && <Filter tags={mainState.tags} clear={clearFilteredTag}/>}
-            {tabValues.map(tab =>
-                isActive(tab.status) &&
-                <Tab key={tab.status}
-                     books={booksForTab(tab.status)}
-                     tab={tab}
-                     changeStatus={changeBookStatus(tab.nextStatus)}
-                     addFilteredTag={addFilteredTag} />)}
         </div>
-    );
+        {mainState.tags.length > 0 && <Filter tags={mainState.tags} clear={clearFilteredTag}/>}
+        {tabValues.map(tab =>
+            isActive(tab.status) &&
+            <Tab key={tab.status}
+                 books={booksForTab(tab.status)}
+                 tab={tab}
+                 changeStatus={setBookStatus(tab.nextStatus)}
+                 addFilteredTag={addFilteredTag} />)}
+    </div>);
 }
