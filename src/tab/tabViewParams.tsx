@@ -1,5 +1,6 @@
 import React from "react";
-import {Status, Tab} from "./lib/models";
+import {Tab} from "./models";
+import {Status} from "../book/models";
 
 const ToRead: Tab = {
     status: Status.ToRead,
