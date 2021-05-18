@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Tab from "../tab/Tab";
 import "./App.css";
 import {tabValues} from '../tab/tabViewParams';
@@ -16,7 +16,7 @@ export default function App() {
         getBooks().then(resp => {
             const books = resp.items;
             const booksLS = loadFromLocalStorage();
-            setMainState(updateFields(mainState, {books: books.map(book =>
+            setMainState(prevState => updateFields(prevState, {books: books.map(book =>
                     updateFields(book,
                         {status: booksLS.find(bookLS => bookLS.id === book.id)?.status || Status.ToRead})
                 )}))
@@ -25,10 +25,10 @@ export default function App() {
 
         const urlTab = urlQuery.get(QueryFields.Tab);
         const urlTags = urlQuery.get(QueryFields.Tags);
-        setMainState(updateFields(mainState,
+        setMainState(prevState => updateFields(prevState,
             {
-                activeTab: tabValues.some(tab => tab.status === urlTab) ? urlTab : mainState.activeTab, // устанавливаем таб из URL
-                tags:  urlTags?.split(",") || mainState.tags, // устанавливаем теги из URL
+                activeTab: tabValues.some(tab => tab.status === urlTab) ? urlTab : prevState.activeTab, // устанавливаем таб из URL
+                tags:  urlTags?.split(",") || prevState.tags, // устанавливаем теги из URL
             }))
 
         window.onpopstate = function(event) {
