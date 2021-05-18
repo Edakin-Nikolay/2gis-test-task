@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from "react";
-import Tab from "./components/Tab";
+import Tab from "../tab/Tab";
 import "./App.css";
-import {Book, BookId, Main, updateFields, Status, Tag, QueryFields} from "./lib/models";
-import {tabValues} from './tabViewParams';
-import {get30000Books, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
-import Filter from "./components/Filter";
-
-const getQuery = () => new URLSearchParams(window.location.search);
+import {tabValues} from '../tab/tabViewParams';
+import {get30000Books, loadFromLocalStorage, saveToLocalStorage} from "../book/api";
+import Filter from "../filter/Filter";
+import {App, QueryFields} from "./models";
+import {getQuery, updateFields} from "../lib/util";
+import {Book, BookId, Status, Tag} from "../book/models";
 
 export default function App() {
-    const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.ToRead, tags: [], booksCount: 50});
+    const [mainState, setMainState] = useState<App>({books: [], activeTab: Status.ToRead, tags: [], booksCount: 50});
 
     useEffect(() => {
         get30000Books().then(resp => {

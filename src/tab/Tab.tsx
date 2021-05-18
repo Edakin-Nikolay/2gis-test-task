@@ -1,6 +1,7 @@
 import React from 'react';
-import {Book as BookModel, BookId, Tab, Tag} from "../lib/models";
-import Book from "./Book";
+import {Book as BookModel, BookId, Tag} from "../book/models";
+import {Tab} from "./models";
+import Book from "../book/Book";
 
 type TabProps = {
     books: Array<BookModel>,

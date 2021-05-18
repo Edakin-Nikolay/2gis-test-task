@@ -1,5 +1,6 @@
 import React from "react";
-import {Book, ButtonLabel, Tag} from "../lib/models";
+import {ButtonLabel} from "../tab/models";
+import {Book, Tag} from "./models";
 
 interface BookProps {
     book: Book,
