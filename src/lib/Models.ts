@@ -39,6 +39,7 @@ export interface Main {
     books: Array<Book>,
     activeTab: Status,
     tags: Array<Tag>,
+    booksCount: number,
 }
 
 export interface LocalStorageBook {

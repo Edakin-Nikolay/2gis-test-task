@@ -3,14 +3,14 @@ import Tab from "./components/Tab";
 import "./App.css";
 import {Book, BookId, Main, updateFields, Status, Tag, QueryFields} from "./lib/Models";
 import {tabValues} from './TabsData';
-import {getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
+import {get30000Books, getBooks, loadFromLocalStorage, saveToLocalStorage} from "./lib/api";
 import Filter from "./components/Filter";
 
 export default function App() {
-    const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.ToRead, tags: []});
+    const [mainState, setMainState] = useState<Main>({books: [], activeTab: Status.ToRead, tags: [], booksCount: 50});
 
     useEffect(() => {
-        getBooks().then(resp => {
+        get30000Books().then(resp => {
             const books = resp.items;
             const booksLS = loadFromLocalStorage();
             setMainState(updateFields(mainState, {books: books.map(book =>
@@ -43,7 +43,10 @@ export default function App() {
         mainState.books.filter(book => book.status === tabStatus);
 
     const booksForTab = (tabStatus: Status): Array<Book> =>
-        filterBooksByStatus(tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag)));
+        filterBooksByStatus(tabStatus).filter(book => mainState.tags.every(tag => book.tags.includes(tag))).slice(0, mainState.booksCount);
+
+    const nextPage = () =>
+        setMainState(prevState => updateFields(prevState, {booksCount: prevState.booksCount + 50}));
 
     const setUrl = () => {
         const urlQuery = new URLSearchParams(window.location.search);
@@ -93,6 +96,8 @@ export default function App() {
                      books={booksForTab(tab.status)}
                      tab={tab}
                      changeStatus={changeBookStatus(tab.nextStatus)}
+                     nextPage={nextPage}
+                     canNextPage={filterBooksByStatus(tab.status).length > mainState.booksCount}
                      addFilteredTag={addFilteredTag} />)}
         </div>
     );

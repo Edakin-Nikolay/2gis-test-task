@@ -7,18 +7,26 @@ type TabProps = {
     tab: Tab,
     changeStatus: (bookId: BookId) => void
     addFilteredTag: (tag: Tag) => void,
+    nextPage: () => void,
+    canNextPage: boolean,
 }
 
 const Tab = (props: TabProps) => {
-    const {books, tab, changeStatus, addFilteredTag} = props;
+    const {books, tab, changeStatus, addFilteredTag, nextPage, canNextPage} = props;
     return (<div>
         {books.length > 0
-            ? books.map(book =>
+            ? <div>{books.map(book =>
                 <Book key={book.id.toString()}
                       book={book}
                       buttonLabel={tab.buttonLabel}
                       addFilteredTag={addFilteredTag}
-                      changeStatus={() => changeStatus(book.id)}/>)
+                      changeStatus={() => changeStatus(book.id)}/>)}
+                <div className="next-page-button-wrapper">
+                    <button disabled={!canNextPage} onClick={nextPage}>
+                        Add next 50 books
+                    </button>
+                </div>
+            </div>
             : <div className="empty-tab">List is empty</div>}
     </div>);
 }
