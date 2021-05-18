@@ -52,7 +52,7 @@ export default function App() {
         const tagsString = mainState.tags.join();
         if (!(mainState.activeTab === urlTab && tagsString === urlTags)) {
             urlQuery.set(QueryFields.Tab, mainState.activeTab);
-            mainState.tags.length > 0 && urlQuery.set(QueryFields.Tags, tagsString);
+            mainState.tags.length > 0 ? urlQuery.set(QueryFields.Tags, tagsString) : urlQuery.delete(QueryFields.Tags);
             history.pushState({
                 activeTab: mainState.activeTab,
                 tags: mainState.tags
